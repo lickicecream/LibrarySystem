@@ -1,5 +1,6 @@
 package com.bjpowernode;
 
+import com.bjpowernode.Util.InitDataUtil;
 import com.bjpowernode.bean.Admin;
 import com.bjpowernode.global.Section;
 import com.bjpowernode.global.AdminDetail;

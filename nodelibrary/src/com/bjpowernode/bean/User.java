@@ -1,10 +1,26 @@
 package com.bjpowernode.bean;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Objects;
 
-public class User {
+public class User implements Serializable {
+    //在User类实现Serilizaable几口后，最好添加serialVersionUID，
+    //这样做的好处就是在User对象已经被存储到硬盘文件之后
+    //我们再修改User类属性是不会发生异常
+    private static final long serialVersionUID=111L;
+
     private int id;
+
+    private String password;
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
 
     public User(int id, String name, String status, BigDecimal money) {
         this.id = id;
