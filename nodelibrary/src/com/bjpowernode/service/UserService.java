@@ -7,4 +7,5 @@ import java.util.List;
 public interface UserService {
     List<User>select();
     void addUser(User user);
+    void updateUser(User user);
 }

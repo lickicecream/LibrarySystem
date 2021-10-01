@@ -1,11 +1,13 @@
 package com.bjpowernode.dao.impl;
 
 import com.bjpowernode.Util.InitDataUtil;
+import com.bjpowernode.bean.Constant;
 import com.bjpowernode.bean.PathConstant;
 import com.bjpowernode.bean.User;
 import com.bjpowernode.dao.UserDao;
 
 import java.io.*;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,8 +46,8 @@ public class UserDaoImpl implements UserDao {
                 user.setId(lastUser.getId() + 1);
                 list.add(user);
 
-            }else{
-                list=new ArrayList<>();
+            } else {
+                list = new ArrayList<>();
                 user.setId(1001);
                 list.add(user);
             }
@@ -66,5 +68,49 @@ public class UserDaoImpl implements UserDao {
             }
         }
 
+    }
+
+    @Override
+    public void update(User user) {
+        //将list数据从文件中查询出来
+        ObjectInputStream ois = null;
+        ObjectOutputStream oos = null;
+
+        try {
+            ois = new ObjectInputStream(new FileInputStream(new File(PathConstant.USER_PATH)));
+            List<User> list = (List<User>) ois.readObject();
+            if (list != null) {
+                //lambda表达式
+                User originUser=list.stream().filter(u->u.getId()==user.getId()).findFirst().get();
+                originUser.setName(user.getName());
+                originUser.setMoney(user.getMoney());
+
+            }else{
+                list=new ArrayList<>();
+                list.add(user);
+                System.out.println("元数据为空");
+            }
+            oos = new ObjectOutputStream(new FileOutputStream(new File(PathConstant.USER_PATH)));
+            oos.writeObject(list);
+            oos.flush();
+        } catch (Exception e) {
+
+        } finally {
+            if (ois != null) {
+                try {
+                    ois.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            if (oos != null) {
+                try {
+                    oos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 }
