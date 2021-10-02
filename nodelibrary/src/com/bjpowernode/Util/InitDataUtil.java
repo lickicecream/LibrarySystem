@@ -49,6 +49,8 @@ public class InitDataUtil {
                 oos = new ObjectOutputStream(new FileOutputStream(file));
                 oos.writeObject(list);
                 oos.flush();
+            }else{
+
             }
         } catch (Exception e) {
             e.printStackTrace();

@@ -16,6 +16,52 @@ import java.util.List;
  */
 
 public class UserDaoImpl implements UserDao {
+
+    /**
+     * 删除用户，通过id删除
+     *
+     * @param id
+     */
+    @Override
+    public void delete(int id) {
+        ObjectOutputStream oos = null;
+        ObjectInputStream ois = null;
+        try {
+            ois = new ObjectInputStream(new FileInputStream(new File(PathConstant.USER_PATH)));
+            List<User> list = (List<User>) ois.readObject();
+            if (list != null) {
+//                User user = list.stream().filter(u -> u.getId() == id).findFirst().get();
+//                list.remove(user);
+                for (User u : list) {
+                    if (u.getId() == id) {
+                        list.remove(u);
+                        break;
+                    }
+                }
+            }
+            oos = new ObjectOutputStream(new FileOutputStream(new File(PathConstant.USER_PATH)));
+            oos.writeObject(list);
+            oos.flush();
+        } catch (Exception e) {
+            throw new RuntimeException("删除失败请联系管理员");
+        } finally {
+            if (oos != null) {
+                try {
+                    oos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (ois != null) {
+                try {
+                    ois.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
     @Override
     public List<User> select() {
 //        InitDataUtil.initUser();
@@ -81,12 +127,12 @@ public class UserDaoImpl implements UserDao {
             List<User> list = (List<User>) ois.readObject();
             if (list != null) {
                 //lambda表达式
-                User originUser=list.stream().filter(u->u.getId()==user.getId()).findFirst().get();
+                User originUser = list.stream().filter(u -> u.getId() == user.getId()).findFirst().get();
                 originUser.setName(user.getName());
                 originUser.setMoney(user.getMoney());
 
-            }else{
-                list=new ArrayList<>();
+            } else {
+                list = new ArrayList<>();
                 list.add(user);
                 System.out.println("元数据为空");
             }
