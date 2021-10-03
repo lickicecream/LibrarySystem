@@ -7,6 +7,7 @@ import java.util.Objects;
     Õº È
  */
 public class Book implements Serializable {
+    public static final long serialVersionUID=1L ;
     //±‡∫≈
     private int id;
     // È√˚

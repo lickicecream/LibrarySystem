@@ -64,7 +64,7 @@ public class BookViewCtrl implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
 
-        books.addAll(bookService.select());
+        books.addAll(bookService.select(null));
 //        books.add(new Book(1, "java实战入门", "张三", Constant.TYPE_COMPUTER, "12-987", "XX出版社", Constant.STATUS_STORAGE));
 //        books.add(new Book(2, "编程之道", "李四", Constant.TYPE_COMPUTER, "1245-987", "XX出版社", Constant.STATUS_STORAGE));
 //        books.add(new Book(3, "颈椎病康复指南", "王五", Constant.TYPE_COMPUTER, "08712-987", "XX出版社", Constant.STATUS_STORAGE));
@@ -105,7 +105,9 @@ public class BookViewCtrl implements Initializable {
                 Alerts.warning("未选择","请先选择要删除的数据");
                 return;
             }
+            bookService.deleteBook(book);
             this.books.remove(book);
+
             Alerts.success("成功", "图书修改成功");
         } catch (Exception e) {
             e.printStackTrace();
@@ -122,19 +124,35 @@ public class BookViewCtrl implements Initializable {
         String isbn = isbnField.getText();
         boolean bookFlag = "".equals(bookName);
         boolean isbnFlag = "".equals(isbn);
-        ObservableList<Book> result = books;
-        if (bookFlag && isbnFlag) {
-            return;
-        }else {
-            if (!bookFlag){
-                result = books.filtered(s -> s.getBookName().contains(bookName));
-            }
-            if (!isbnFlag) {
-                result = books.filtered(s -> s.getIsbn().contains(isbn));
-            }
-        }
+        if(bookFlag&&isbnFlag){
+           Alerts.warning("未输入","输入的数据不能为空");
+           books=new ObservableListWrapper<Book>(bookService.select(null));
 
-        books = new ObservableListWrapper<Book>(new ArrayList<Book>(result));
+        }else{
+            Book book=new Book();
+            book.setBookName(bookName);
+            book.setIsbn(isbn);
+            books=new ObservableListWrapper<Book>(bookService.select(book));
+
+        }
+//        ObservableList<Book> result = books;
+
+        /*
+        * 这段为操作内存的方法，现在更改为数据持久化以后的操作方法
+        *
+        */
+//        if (bookFlag && isbnFlag) {
+//            return;
+//        }else {
+//            if (!bookFlag){
+//                result = books.filtered(s -> s.getBookName().contains(bookName));
+//            }
+//            if (!isbnFlag) {
+//                result = books.filtered(s -> s.getIsbn().contains(isbn));
+//            }
+//        }
+
+//        books = new ObservableListWrapper<Book>(new ArrayList<Book>(result));
         bookTableView.setItems(books);
     }
 

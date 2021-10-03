@@ -16,14 +16,18 @@ import java.util.List;
 
 public class InitDataUtil {
     public static void main(String[] args) {
-        List<User>userList=new ArrayList<>();
+        List<User>userList=new ArrayList<>(50);
         userList.add(new User(1001, "李翰勉",
                         Constant.USER_OK, new BigDecimal(200)));
         initData(PathConstant.USER_PATH,userList);
-        List<Book>bookList=new ArrayList<>();
+        List<Book>bookList=new ArrayList<>(50);
         bookList.add(new Book(1001, "bible",
                 "lihanmian", Constant.TYPE_LITERATURE,
                 "123-5", "北方出版社", Constant.STATUS_LEND));
+//        bookList.add(new Book(1002, "bible",
+//                "lihanmian", Constant.TYPE_LITERATURE,
+//                "123-6", "北方出版社", Constant.STATUS_LEND));
+
         initData(PathConstant.BOOK_PATH,bookList);
     }
 
@@ -123,6 +127,7 @@ public class InitDataUtil {
                 file.createNewFile();
                 oos = new ObjectOutputStream(new FileOutputStream(file));
                 oos.writeObject(list);
+                oos.flush();
             }
         } catch (Exception e) {
             e.printStackTrace();
