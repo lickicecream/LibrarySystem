@@ -9,8 +9,28 @@ import java.util.List;
 
 public class BookServiceImpl implements BookService {
     BookDao bookDao=new BookDaoImpl();
+//    @Override
+//    public List<Book> select() {
+//        return bookDao.select();
+//    }
+
     @Override
-    public List<Book> select() {
-        return bookDao.select();
+    public List<Book> select(Book book) {
+        return bookDao.select(book);
+    }
+
+    @Override
+    public void addBook(Book book) {
+        bookDao.addBook(book);
+    }
+
+    @Override
+    public void deleteBook(Book book) {
+        bookDao.deleteBook(book);
+    }
+
+    @Override
+    public void modifyBook(Book book) {
+        bookDao.modifyBook(book);
     }
 }

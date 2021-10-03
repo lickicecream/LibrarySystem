@@ -2,7 +2,11 @@ package com.bjpowernode.module.book;
 
 import com.bjpowernode.bean.Book;
 import com.bjpowernode.bean.Constant;
+import com.bjpowernode.dao.BookDao;
+import com.bjpowernode.dao.impl.BookDaoImpl;
 import com.bjpowernode.global.util.Alerts;
+import com.bjpowernode.service.BookService;
+import com.bjpowernode.service.impl.BookServiceImpl;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.ComboBox;
@@ -37,6 +41,8 @@ public class BookHandleViewCtrl {
 
     private ObservableList<Book> books;
 
+    private BookService bookService=new BookServiceImpl();
+
     //修改的book对象
     private Book book;
 
@@ -52,14 +58,19 @@ public class BookHandleViewCtrl {
                 Book book = new Book();
                 populate(book);
                 book.setStatus(Constant.STATUS_STORAGE);
+                bookService.addBook(book);
                 books.add(book);
+
             }else {
+
                 //修改操作
                 populate(this.book);
+
+                //数据持久化
+                bookService.modifyBook(this.book);
                 //刷新
                 bookTableView.refresh();
             }
-
             stage.close();
             Alerts.success("成功", "操作成功");
         } catch (Exception e) {
