@@ -36,4 +36,14 @@ public class UserServiceImpl implements UserService {
     public void delete(int id) {
         userDao.delete(id);
     }
+
+    @Override
+    public void frozen(int id) {
+        userDao.frozen(id);
+    }
+
+    @Override
+    public void unFrozen(int id) {
+        userDao.unFrozen(id);
+    }
 }

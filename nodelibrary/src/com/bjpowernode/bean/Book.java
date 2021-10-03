@@ -1,11 +1,12 @@
 package com.bjpowernode.bean;
 
+import java.io.Serializable;
 import java.util.Objects;
 
 /*
     Õº È
  */
-public class Book {
+public class Book implements Serializable {
     //±‡∫≈
     private int id;
     // È√˚

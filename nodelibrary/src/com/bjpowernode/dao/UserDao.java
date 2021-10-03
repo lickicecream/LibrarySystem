@@ -10,4 +10,7 @@ public interface UserDao  {
     void update(User user);
 
     void delete(int id);
+    void frozen(int id);
+
+    void unFrozen(int id);
 }

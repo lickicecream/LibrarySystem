@@ -5,6 +5,7 @@ import com.bjpowernode.bean.Constant;
 import com.bjpowernode.bean.PathConstant;
 import com.bjpowernode.bean.User;
 import com.bjpowernode.dao.UserDao;
+import com.bjpowernode.global.util.Alerts;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -62,6 +63,11 @@ public class UserDaoImpl implements UserDao {
         }
     }
 
+    /**
+     * 查询用户信息
+     *
+     * @return
+     */
     @Override
     public List<User> select() {
 //        InitDataUtil.initUser();
@@ -77,6 +83,11 @@ public class UserDaoImpl implements UserDao {
         return new ArrayList<User>();
     }
 
+    /**
+     * 增加新用户
+     *
+     * @param user
+     */
     @Override
     public void addUser(User user) {
         ObjectInputStream ois = null;
@@ -102,7 +113,7 @@ public class UserDaoImpl implements UserDao {
             oos.flush();
 
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException("操作失败请联系管理员");
         } finally {
             try {
                 if (ois != null)
@@ -116,6 +127,11 @@ public class UserDaoImpl implements UserDao {
 
     }
 
+    /**
+     * 更新用户数据
+     *
+     * @param user
+     */
     @Override
     public void update(User user) {
         //将list数据从文件中查询出来
@@ -140,7 +156,7 @@ public class UserDaoImpl implements UserDao {
             oos.writeObject(list);
             oos.flush();
         } catch (Exception e) {
-
+            throw new RuntimeException("操作失败请联系管理员");
         } finally {
             if (ois != null) {
                 try {
@@ -150,6 +166,106 @@ public class UserDaoImpl implements UserDao {
                 }
             }
 
+            if (oos != null) {
+                try {
+                    oos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    /**
+     * 冻结用户
+     *
+     * @param id
+     */
+    @Override
+    public void frozen(int id) {
+        ObjectInputStream ois = null;
+        ObjectOutputStream oos = null;
+        try {
+            ois = new ObjectInputStream(new FileInputStream(PathConstant.USER_PATH));
+            List<User> list = (List<User>) ois.readObject();
+            if (list != null) {
+                for (User user : list) {
+                    if (user.getId() == id) {
+                        if (user.getStatus() == Constant.USER_FROZEN)
+                            Alerts.warning("已冻结", "该用户已冻结");
+                        else
+                            user.setStatus(Constant.USER_FROZEN);
+                        break;
+                    }
+                }
+                oos = new ObjectOutputStream(new FileOutputStream(new File(PathConstant.USER_PATH)));
+                oos.writeObject(list);
+//                throw new RuntimeException("数据库元数据出错，请联系管理员");
+            } else {
+                throw new RuntimeException("数据库元数据出错，请联系管理员");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("");
+        } finally {
+            if (ois != null) {
+                try {
+                    ois.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (oos != null) {
+                try {
+                    oos.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }
+
+    /**
+     * 反冻结
+     *
+     * @param id
+     */
+    @Override
+    public void unFrozen(int id) {
+        ObjectInputStream ois = null;
+        ObjectOutputStream oos = null;
+        try {
+            ois = new ObjectInputStream(new FileInputStream(PathConstant.USER_PATH));
+            List<User> list = (List<User>) ois.readObject();
+            if (list != null) {
+                for (User user : list) {
+                    if (user.getId() == id) {
+                        if (user.getStatus() == Constant.USER_OK)
+                            ;
+//                            Alerts.warning("已冻结", "该用户已冻结");
+                        else
+                            user.setStatus(Constant.USER_OK);
+                        break;
+                    }
+                }
+                oos = new ObjectOutputStream(new FileOutputStream(new File(PathConstant.USER_PATH)));
+                oos.writeObject(list);
+//                throw new RuntimeException("数据库元数据出错，请联系管理员");
+            } else {
+                throw new RuntimeException("数据库元数据出错，请联系管理员");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException();
+        } finally {
+            if (ois != null) {
+                try {
+                    ois.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
             if (oos != null) {
                 try {
                     oos.close();
