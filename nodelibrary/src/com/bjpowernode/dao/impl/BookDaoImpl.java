@@ -1,5 +1,6 @@
 package com.bjpowernode.dao.impl;
 
+import com.bjpowernode.Util.BeanUtil;
 import com.bjpowernode.bean.Book;
 import com.bjpowernode.bean.Constant;
 import com.bjpowernode.bean.PathConstant;
@@ -151,11 +152,15 @@ public class BookDaoImpl implements BookDao {
             List<Book> list = (List<Book>) ois.readObject();
             if (list != null) {
                 Book modifyBook = list.stream().filter(b -> b.getId() == book.getId()).findFirst().get();
-                modifyBook.setBookName(book.getBookName());
-                modifyBook.setIsbn(book.getIsbn());
-                modifyBook.setAuthor(book.getAuthor());
-                modifyBook.setPublisher(book.getPublisher());
-                modifyBook.setType(book.getType());
+                //以下为传统方法，太垃圾
+//                modifyBook.setBookName(book.getBookName());
+//                modifyBook.setIsbn(book.getIsbn());
+//                modifyBook.setAuthor(book.getAuthor());
+//                modifyBook.setPublisher(book.getPublisher());
+//                modifyBook.setType(book.getType());
+
+                //新方法，用反射获取属性，效率直接翻倍
+                BeanUtil.populate(book,modifyBook);
 
                 oos = new ObjectOutputStream(new FileOutputStream(PathConstant.BOOK_PATH));
                 oos.writeObject(list);
